@@ -14,7 +14,7 @@
     "@figma/plugin-typings": "^1.110.0",
     "astro": "^5.7.5",
     "concurrently": "^9.1.2",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.0",  
     "nodemon": "^3.1.10",
     "rimraf": "^5.0.1",
     "typescript": "^5.8.3"
@@ -24,3 +24,5 @@
     "tailwindcss": "^3.4.17"
   }
 }
+
+

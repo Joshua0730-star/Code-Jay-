@@ -1,0 +1,24 @@
+{
+    "tecs": [
+        {
+            "left": {
+                "name": "Html",
+                "imgIdentifier": "html5"
+            },
+            "right": {
+                "name": "Css",
+                "imgIdentifier": "css"
+            }
+        },
+        {
+            "left": {
+                "name": "Html",
+                "imgIdentifier": "html5"
+            },
+            "right": {
+                "name": "Tailwind",
+                "imgIdentifier": "tailwindcss"
+            }
+        }
+    ]
+}

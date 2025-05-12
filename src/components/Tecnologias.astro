@@ -1,0 +1,38 @@
+---
+interface Props {
+
+}
+
+import { tecs } from '../../tecs.json';
+
+// Importa los SVGs usando el sufijo ?inline para forzar la inlinización como Data URI
+import html5 from '../assets/html5.svg?inline';
+import css from '../assets/css.svg?inline';
+import tailwindcss from '../assets/tailwindcss.svg?inline';
+
+// El imageMap ahora contendrá directamente las Data URIs (strings)
+const imageMap = {
+  'html5': html5,
+  'css': css,
+  'tailwindcss': tailwindcss
+};
+---
+
+<div class="absolute bottom-16 z-10 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex flex-col gap-2 w-64 ring-1 ring-neutral-100 shadow-md">
+    {tecs.map(tec => {
+        const { left, right } = tec;
+
+        // Ahora leftImageSrc y rightImageSrc son directamente las Data URIs (o undefined si no se encuentran)
+        // Ya no necesitas acceder a .src porque la importación con ?inline devuelve la Data URI directamente.
+        const leftImageSrc = imageMap[left.imgIdentifier];
+        const rightImageSrc = imageMap[right.imgIdentifier];
+
+        return (
+            <div class="p-3 pl-6 text-center flex gap-2 items-center justify-start cursor-pointer w-full hover:bg-neutral-100 rounded-lg transition-all duration-200 ease-in-out">
+                {leftImageSrc && <img src={leftImageSrc} alt={left.name} class="w-5 h-5" />} {left.name}
+                -
+                {rightImageSrc && <img src={rightImageSrc} alt={right.name} class="w-5 h-5" />} {right.name}
+            </div>
+        )
+    })}
+</div>

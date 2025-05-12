@@ -2,16 +2,21 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 
+// https://astro.build/config
 export default defineConfig({
   integrations: [tailwind()],
   outDir: './dist',
   build: {
-    assets: 'assets',
-    inlineStylesheets: 'always'
+    assets: 'assets', // Define el prefijo de la carpeta de assets en el build
+    inlineStylesheets: 'always' // Si lo tienes, está bien
   },
   vite: {
     build: {
-      assetsInlineLimit: 0
+      // Aumenta el límite para inlinear assets.
+      // Los SVGs de iconos suelen ser pequeños. Un valor de 10240 bytes (10KB)
+      // debería ser suficiente para inlinear la mayoría de los SVGs.
+      // Si tus SVGs son más grandes, ajusta este valor.
+      assetsInlineLimit: 40960 // 10KB. Puedes probar con un valor más alto si es necesario, ej:  (40KB)
     }
   },
   server: {
