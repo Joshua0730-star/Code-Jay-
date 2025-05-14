@@ -1,19 +1,71 @@
 ---
 import Tecnologias from "./Tecnologias.astro";
-
-
-
-
+import IconMagic from '../assets/IconMagic.svg';
 ---
 
-
-<footer class="bg-white p-3 w-full flex justify-center gap-4 items-center text-xs relative ">
+<footer class="bg-white p-3 w-full flex justify-center gap-4 items-center text-xs relative">
     <div>
-        <button class="bg-neutral-50 text-neutral-600 px-12 py-2 rounded-lg ring-1 ring-neutral-300 relative">Tecnologias</button>
-        <Tecnologias></Tecnologias>
-        
+        <button id="tecnologias-toggle-button" class="bg-neutral-50 text-neutral-600 px-12 py-2 rounded-lg ring-1 ring-neutral-300 relative max-w-48 min-w-36 text-center flex justify-center">Tecnologias</button>
+        <Tecnologias id="tecnologias-modal" />
     </div>
     <div>
-        <button class="bg-neutral-800 text-neutral-50 px-12 py-2 rounded-lg"><span>Generate</span></button>
+        <button class="bg-neutral-800 text-neutral-50 px-12 py-2 rounded-lg max-w-48 min-w-36">
+            <img src={IconMagic.src} alt="Copy Icon" class="w-4 h-4 inline-block mr-2" />
+            <span>Generate</span></button>
     </div>
 </footer>
+
+<script>
+
+    const tecnologiasButton = document.getElementById('tecnologias-toggle-button') as HTMLButtonElement | null;
+    const tecnologiasModal = document.getElementById('tecnologias-modal') as HTMLDivElement | null;
+
+    // Logica para tener un contenido por defecto en el boton 
+    if (tecnologiasButton) {
+        const defaultText = 'Html y Css';
+        tecnologiasButton.textContent = defaultText;
+    }
+
+    if (tecnologiasButton && tecnologiasModal) {
+        // --- Lógica para abrir/cerrar el modal (sin cambios) ---
+        tecnologiasButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            tecnologiasModal.classList.toggle('hidden');
+            if (!tecnologiasModal.classList.contains('hidden')) {
+                tecnologiasModal.classList.add('flex');
+            } else {
+                tecnologiasModal.classList.remove('flex');
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (
+                !tecnologiasModal.classList.contains('hidden') &&
+                !tecnologiasModal.contains(event.target as Node) &&
+                event.target !== tecnologiasButton
+            ) {
+                tecnologiasModal.classList.add('hidden');
+                tecnologiasModal.classList.remove('flex');
+            }
+        });
+
+        // --- Nueva lógica para manejar el clic en las opciones del modal ---
+        const tecnologiaOptions = tecnologiasModal.querySelectorAll('.tecnologia-option');
+
+        tecnologiaOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const optionText = (option as HTMLElement).dataset.optionText;
+                if (optionText) {
+                    tecnologiasButton.textContent = optionText; // Actualiza el texto del botón
+                }
+                // Opcional: Guardar la selección para uso futuro
+                // const selectedLeftTec = (option as HTMLElement).dataset.leftTec;
+                // const selectedRightTec = (option as HTMLElement).dataset.rightTec;
+                // console.log('Seleccionado:', selectedLeftTec, selectedRightTec);
+
+                tecnologiasModal.classList.add('hidden'); // Cierra el modal
+                tecnologiasModal.classList.remove('flex');
+            });
+        });
+    }
+</script>

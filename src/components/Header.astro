@@ -1,9 +1,12 @@
 ---
-interface Props {
+interface Props { // Define las propiedades esperadas a este componente
     title: string;
 }
 
-const { title} = Astro.props as Props;
+// Astro : variable global que contiene información sobre el entorno de ejecución de astro
+// Astro.props es un objeto que contiene las propiedades pasadas al componente
+
+const { title } = Astro.props as Props; // <-- as props: para indicar el tipo de las propiedades
 ---
 
 
