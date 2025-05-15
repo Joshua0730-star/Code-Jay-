@@ -9,6 +9,7 @@ import { tecs } from '../../tecs.json';
 import html5 from '../assets/html5.svg?inline';
 import css from '../assets/css.svg?inline';
 import tailwindcss from '../assets/tailwindcss.svg?inline';
+import Star from '../assets/star.svg?inline';
 
 const imageMap = {
     'html5': html5,
@@ -19,26 +20,30 @@ const imageMap = {
 
 <div
     id={id} 
-    class="absolute bottom-16 z-10 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex-col gap-2 w-64 ring-1 ring-neutral-100 shadow-md hidden"
+    class="absolute bottom-16 z-10 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex-col gap-1 w-64 ring-1 ring-neutral-100 shadow-md hidden"
 >
     {tecs.map((tec, index) => {
         const { left, right } = tec;
         const leftImageSrc = imageMap[left.imgIdentifier];
         const rightImageSrc = imageMap[right.imgIdentifier];
-        // Crear un texto combinado para el botón
         const optionText = `${left.name} y ${right.name}`;
         return (
-            <div class="tecnologia-option p-3 pl-6 text-center flex gap-2 items-center justify-start cursor-pointer w-full hover:bg-neutral-100 rounded-lg transition-all duration-200 ease-in-out"
+            <div
+                class="tecnologia-option p-3 pl-6  flex gap-2 items-center justify-between cursor-pointer w-full hover:bg-slate-100 rounded-lg transition-all duration-150 ease-in-out"
             data-option-text={optionText} 
-
             data-left-tec={left.name}
             data-right-tec={right.name}
-            data-index={index}
->
-                {leftImageSrc && <img src={leftImageSrc} alt={left.name} class="w-5 h-5" />} {left.name}
-                -
-                {rightImageSrc && <img src={rightImageSrc} alt={right.name} class="w-5 h-5" />} {right.name}
+                data-index={index}
+            >
+                <div class="flex items-center gap-2">
+                    {leftImageSrc && <img src={leftImageSrc} alt={left.name} class="w-5 h-5" />} {left.name}
+                    -
+                    {rightImageSrc && <img src={rightImageSrc} alt={right.name} class="w-5 h-5" />} {right.name}
+            </div>
+                <div class="selected-star-indicator hidden">
+                    <img src={Star} alt="Selected" class="size-3 " />
 </div>
+            </div>
         )
     })}
 </div>

@@ -1,33 +1,28 @@
 ---
 import Tecnologias from "./Tecnologias.astro";
-import IconMagic from '../assets/IconMagic.svg';
+import IconMagic from '../assets/IconMagic.svg?inline';
 ---
 
 <footer class="bg-white p-3 w-full flex justify-center gap-4 items-center text-xs relative">
     <div>
-        <button id="tecnologias-toggle-button" class="bg-neutral-50 text-neutral-600 px-12 py-2 rounded-lg ring-1 ring-neutral-300 relative max-w-48 min-w-36 text-center flex justify-center">Tecnologias</button>
+        <button id="tecnologias-toggle-button" class="bg-neutral-50 text-neutral-600 px-12 py-2 rounded-lg ring-1 ring-neutral-300 relative max-w-48 min-w-36 text-center flex justify-center items-center overflow-hidden text-ellipsis whitespace-nowrap">Tecnologias</button>
         <Tecnologias id="tecnologias-modal" />
     </div>
     <div>
-        <button class="bg-neutral-800 text-neutral-50 px-12 py-2 rounded-lg max-w-48 min-w-36">
-            <img src={IconMagic.src} alt="Copy Icon" class="w-4 h-4 inline-block mr-2" />
-            <span>Generate</span></button>
+        <button class="bg-neutral-800 text-neutral-50 px-12 py-2 rounded-lg max-w-48 min-w-36 flex items-center justify-center">
+            <img src={IconMagic} alt="Magic Icon" class="w-4 h-4 inline-block mr-2" />
+            <span>Generate</span>
+        </button>
     </div>
 </footer>
 
 <script>
-
     const tecnologiasButton = document.getElementById('tecnologias-toggle-button') as HTMLButtonElement | null;
     const tecnologiasModal = document.getElementById('tecnologias-modal') as HTMLDivElement | null;
 
-    // Logica para tener un contenido por defecto en el boton 
-    if (tecnologiasButton) {
-        const defaultText = 'Html y Css';
-        tecnologiasButton.textContent = defaultText;
-    }
-
+    let currentlySelectedOptionElement: HTMLElement | null = null; // Para rastrear el ELEMENTO de la opción seleccionada
     if (tecnologiasButton && tecnologiasModal) {
-        // --- Lógica para abrir/cerrar el modal (sin cambios) ---
+        // --- Lógica para abrir/cerrar el modal ---
         tecnologiasButton.addEventListener('click', (event) => {
             event.stopPropagation();
             tecnologiasModal.classList.toggle('hidden');
@@ -49,21 +44,49 @@ import IconMagic from '../assets/IconMagic.svg';
             }
         });
 
-        // --- Nueva lógica para manejar el clic en las opciones del modal ---
-        const tecnologiaOptions = tecnologiasModal.querySelectorAll('.tecnologia-option');
+        // --- Lógica para manejar el clic en las opciones del modal ---
+        const tecnologiaOptions = tecnologiasModal.querySelectorAll('.tecnologia-option') as NodeListOf<HTMLElement>;
 
-        tecnologiaOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const optionText = (option as HTMLElement).dataset.optionText;
-                if (optionText) {
-                    tecnologiasButton.textContent = optionText; // Actualiza el texto del botón
+        // Función para actualizar el estado visual de selección
+        function updateSelection(selectedOptionElement: HTMLElement) {
+            // 1. Quitar selección de la opción anterior (si existe)
+            if (currentlySelectedOptionElement && currentlySelectedOptionElement !== selectedOptionElement) {
+                const prevStarIndicator = currentlySelectedOptionElement.querySelector('.selected-star-indicator');
+                if (prevStarIndicator) {
+                    prevStarIndicator.classList.add('hidden');
                 }
-                // Opcional: Guardar la selección para uso futuro
-                // const selectedLeftTec = (option as HTMLElement).dataset.leftTec;
-                // const selectedRightTec = (option as HTMLElement).dataset.rightTec;
-                // console.log('Seleccionado:', selectedLeftTec, selectedRightTec);
+                currentlySelectedOptionElement.classList.remove('bg-neutral-200'); // Quitar estilo de fondo si lo usas
+            }
 
-                tecnologiasModal.classList.add('hidden'); // Cierra el modal
+            // 2. Aplicar selección a la nueva opción
+            const currentStarIndicator = selectedOptionElement.querySelector('.selected-star-indicator');
+            if (currentStarIndicator) {
+                currentStarIndicator.classList.remove('hidden');
+            }
+            // selectedOptionElement.classList.add('bg-neutral-200'); // Añadir estilo de fondo si lo usas
+
+            // 3. Actualizar el texto del botón principal
+            const optionText = selectedOptionElement.dataset.optionText;
+            if (optionText && tecnologiasButton) {
+                tecnologiasButton.textContent = optionText;
+            }
+
+            // 4. Actualizar la referencia a la opción seleccionada
+            currentlySelectedOptionElement = selectedOptionElement;
+        }
+
+        // Establecer la primera opción como seleccionada por defecto al cargar
+        if (tecnologiaOptions.length > 0) {
+            updateSelection(tecnologiaOptions[0]);
+        }
+
+        // Event listener para cada opción
+        tecnologiaOptions.forEach(optionElement => {
+            optionElement.addEventListener('click', () => {
+                updateSelection(optionElement); // Llama a la función para manejar la selección
+
+                // Cerrar el modal después de la selección
+                tecnologiasModal.classList.add('hidden');
                 tecnologiasModal.classList.remove('flex');
             });
         });
