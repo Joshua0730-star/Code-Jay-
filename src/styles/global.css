@@ -6,7 +6,6 @@
 :root {
   --primary-color: #1E1E1E;
   --secondary-color: #2C2C2C;
-  --accent-color: #0D99FF;
   --text-color: #FFFFFF;
 }
 
@@ -14,3 +13,60 @@ body {
   @apply bg-figma-bg text-figma-text;
   font-family: montserrat , -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
+
+
+.loader {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 1.5px solid;
+  border-color: #555F6C #555F6C transparent transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader::after,
+.loader::before {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 1.5px solid;
+  border-color: transparent transparent #DBEAFE #DBEAFE;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
+.loader::before {
+
+  border-color: #555F6C #555F6C transparent transparent;
+  animation: rotation 1.5s linear infinite;
+}
+    
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+    
+
+

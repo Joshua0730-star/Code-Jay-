@@ -23,7 +23,9 @@ const imageMap = {
     class="absolute bottom-16 z-10 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex-col gap-1 w-64 ring-1 ring-neutral-100 shadow-md hidden"
 >
     {tecs.map((tec, index) => {
-        const { left, right } = tec;
+        const { left, right } = tec; // <-- Ambas partes de tecnologias
+
+        // Fuentes de imagenes
         const leftImageSrc = imageMap[left.imgIdentifier];
         const rightImageSrc = imageMap[right.imgIdentifier];
         const optionText = `${left.name} y ${right.name}`;
@@ -33,17 +35,18 @@ const imageMap = {
             data-option-text={optionText} 
             data-left-tec={left.name}
             data-right-tec={right.name}
-                data-index={index}
+            data-index={index}
+            
             >
                 <div class="flex items-center gap-2">
                     {leftImageSrc && <img src={leftImageSrc} alt={left.name} class="w-5 h-5" />} {left.name}
                     -
                     {rightImageSrc && <img src={rightImageSrc} alt={right.name} class="w-5 h-5" />} {right.name}
-            </div>
+                </div>
                 <div class="selected-star-indicator hidden">
                     <img src={Star} alt="Selected" class="size-3 " />
-</div>
-            </div>
+                </div>
+        </div>
         )
     })}
 </div>

@@ -14,7 +14,15 @@
         "allowedDomains": [
             "https://fonts.googleapis.com",
             "https://fonts.gstatic.com",
-            "https://api.openai.com"
+            "https://api.openai.com",
+            "http://localhost:3001"
+        ],
+        "reasoning": "This plugin requires access to the OpenAI API for code generation and uses Google Fonts for styling.",
+        "devAllowedDomains": [
+            "https://fonts.googleapis.com",
+            "https://fonts.gstatic.com",
+            "https://api.openai.com",
+            "http://localhost:3001"
         ]
     }
 }

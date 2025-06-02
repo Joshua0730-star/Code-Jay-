@@ -14,6 +14,7 @@ export default {
 				Montserrat: ['Montserrat', 'sans-serif'],
 				roboto: ['Roboto', 'sans-serif'],
 			},
+			
 		}
 	},
 	plugins: []

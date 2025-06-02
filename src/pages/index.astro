@@ -4,14 +4,28 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Main from "../components/Main.astro";
 import Footer from "../components/Footer.astro";
+
+const BACKEND_PORT = 3001;
+const BACKEND_URL_SERVER = `http://localhost:${BACKEND_PORT}/api/generate-code`; // Renombrado para evitar confusión
 ---
 
 <Layout>
   <Header title="Code Jay"/>
-  <Main></Main>
-  <Footer></Footer>
-  <script>
-    // Comunicación con el plugin
-    window.parent.postMessage({ pluginMessage: "Hello from Astro!" }, "*");
+  <Main />
+  <Footer />
+
+  {/* 
+    Este script inline es solo para definir la variable global BACKEND_URL.
+    Se ejecuta ANTES que el script importado.
+  */}
+  <script define:vars={{ backendUrlForClient: BACKEND_URL_SERVER }} is:inline>
+    window.BACKEND_URL = backendUrlForClient;
+    // console.log('BACKEND_URL set on window:', window.BACKEND_URL); // Para depuración
   </script>
+
+  {/* 
+    Importar el script TypeScript. Astro lo procesará y lo empaquetará.
+    Este script ahora puede usar TypeScript sin problemas.
+  */}
+  <script src="../scripts/main-ui-logic.ts"></script>
 </Layout>

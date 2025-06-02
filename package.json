@@ -3,12 +3,14 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "concurrently \"npm run watch\" \"astro dev\" \"npm run watch:plugin\"",
-    "watch:plugin": "nodemon --watch dist/index.html --watch src/code.ts --exec \"node scripts/post-build.js\"",
-    "build": "tsc",
-    "watch": "tsc -w",
+    "dev:astro": "astro dev", 
+    "watch:figma": "tsc -w", 
+    "dev": "concurrently \"npm run watch:figma\" \"npm run dev:astro\"", 
+    "build:ui": "astro build",
+    "build:figma_ts": "tsc",
+    "process_figma_output": "node scripts/post-build.js", 
     "clean": "rimraf dist assets ui.html",
-    "build:plugin": "npm run clean && astro build && tsc && node scripts/post-build.js"
+    "build:plugin": "npm run clean && npm run build:ui && npm run build:figma_ts && npm run process_figma_output"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.110.0",
@@ -24,5 +26,3 @@
     "tailwindcss": "^3.4.17"
   }
 }
-
-
