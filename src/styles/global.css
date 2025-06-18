@@ -48,7 +48,6 @@ body {
 }
 
 .loader::before {
-
   border-color: #555F6C #555F6C transparent transparent;
   animation: rotation 1.5s linear infinite;
 }

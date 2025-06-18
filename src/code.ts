@@ -5,24 +5,43 @@ if (DEV_MODE) {
   figma.showUI(__html__, { width: 700, height: 650 });
 }
 
-// Función para serializar y enviar la selección actual
+
+
+
+// Función para sacar informacion basica y enviar la selección actual
 async function sendCurrentSelectionToUI() {
-  const selectedNodes = figma.currentPage.selection as SceneNode[]; // Asegúrate de que sea un array de SceneNode
+  const selectedNodes = figma.currentPage.selection as SceneNode[];
   const serializedNodesInfo = [];
 
   if (selectedNodes.length > 0) {
     for (const node of selectedNodes) {
-      // Para la previsualización, solo necesitamos información básica
-      // como el nombre y el tipo, quizás una miniatura si es viable.
-      // La serialización completa se hará cuando se pida 'generate-code-request'.
-      serializedNodesInfo.push({
-        id: node.id,
-        name: node.name,
-        type: node.type,
-        // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
-        // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
-        // thumbnail: await node.exportAsync({ format: 'PNG', constraint: { type: 'HEIGHT', value: 32 }}) // Ejemplo
-      });
+      try {
+        // Para la previsualización, solo necesitamos información básica
+        // como el nombre y el tipo, quizás una miniatura si es viable.
+        // La serialización completa se hará cuando se pida 'generate-code-request'.
+        const thumbnail = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 }, contentsOnly: true })
+
+
+
+        serializedNodesInfo.push({
+          id: node.id,
+          name: node.name,
+          type: node.type,
+          // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
+          // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
+          thumbnail: thumbnail// Ejemplo
+        });
+      } catch (err) {
+        console.error('Error exporting thumbnail for node:', node.name, err);
+
+        // Enviar sin miniatura
+        serializedNodesInfo.push({
+          id: node.id,
+          name: node.name,
+          type: node.type,
+          thumbnail: new Uint8Array(0)
+        });
+      }
     }
   }
   // Enviar solo la información necesaria para la previsualización
@@ -34,11 +53,11 @@ async function sendCurrentSelectionToUI() {
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'ui-loaded-and-ready-for-selection') { // La UI nos dice que está lista
 
-    console.log('UI is ready, sending initial selection.');
+    // console.log('UI is ready, sending initial selection.');
     await sendCurrentSelectionToUI(); // Enviar selección actual al cargar la UI
   } else if (msg.type === 'generate-code-request') {
     const selectedNodes = figma.currentPage.selection as SceneNode[];
-
+    console.log(selectedNodes.length)
     if (selectedNodes.length === 0) {
       figma.ui.postMessage({ type: 'figma-data', data: [], error: 'No layers selected. Please select some layers to generate code.' });
       figma.notify('⚠️ No layers selected. Please select some layers.', { error: true });
@@ -56,8 +75,27 @@ figma.ui.onmessage = async (msg) => {
         width: node.width,
         height: node.height,
         parentId: node.parent ? node.parent.id : null,
-        visible: node.visible,
+        visible: node.visible
       };
+
+      if ("children" in node) {
+        nodeData.children = node.children
+        nodeData.childCss = []
+        node.children.forEach(async (child) => {
+          let cssChild = await child.getCSSAsync();
+
+
+          if (child.type === 'TEXT') {
+            cssChild.text = child.characters;
+            cssChild.fontSize = String(child.fontSize)
+          }
+
+          nodeData.childCss.push(cssChild);
+        })
+
+
+
+      }
 
       if ('fills' in node && 'strokes' in node && 'effects' in node && 'opacity' in node) {
         nodeData.fills = node.fills;
@@ -117,15 +155,17 @@ figma.ui.onmessage = async (msg) => {
       serializedNodes.push(nodeData); // Aquí va la serialización completa
     }
     // Enviar los datos completos para la generación de código
-    figma.ui.postMessage({ type: 'figma-data', data: serializedNodes });
-    figma.notify(`✅ Sent ${serializedNodes.length} layer(s) data to UI for generation.`);
+    figma.ui.postMessage({ type: 'figma-data', data: serializedNodes, animation: true });
+    figma.notify(`✅ Sent ${serializedNodes.length} layer(s) data to UI for generation.`, {
+      timeout: 1000
+    });
 
   } else if (msg.pluginMessage && msg.pluginMessage.type === "ui-loaded") { // Mensaje original de index.astro
     console.log("Message received from UI (Astro): UI Loaded");
     // Podrías enviar la selección aquí también si la UI no envía 'ui-loaded-and-ready-for-selection'
     // await sendCurrentSelectionToUI();
   } else if (msg.type === 'notify') {
-    figma.notify(msg.message, { timeout: msg.timeout || 3000, error: msg.error || false });
+    figma.notify(msg.message, { timeout: msg.timeout || 2000, error: msg.error || false });
   }
 };
 

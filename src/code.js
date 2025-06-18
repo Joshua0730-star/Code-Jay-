@@ -22,30 +22,17 @@ function sendCurrentSelectionToUI() {
         const serializedNodesInfo = [];
         if (selectedNodes.length > 0) {
             for (const node of selectedNodes) {
-                try {
-                    // Para la previsualización, solo necesitamos información básica
-                    // como el nombre y el tipo, quizás una miniatura si es viable.
-                    // La serialización completa se hará cuando se pida 'generate-code-request'.
-                    const thumbnail = yield node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 }, contentsOnly: true });
-                    serializedNodesInfo.push({
-                        id: node.id,
-                        name: node.name,
-                        type: node.type,
-                        // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
-                        // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
-                        thumbnail: thumbnail // Ejemplo
-                    });
-                }
-                catch (err) {
-                    console.error('Error exporting thumbnail for node:', node.name, err);
-                    // Enviar sin miniatura
-                    serializedNodesInfo.push({
-                        id: node.id,
-                        name: node.name,
-                        type: node.type,
-                        thumbnail: new Uint8Array(0)
-                    });
-                }
+                // Para la previsualización, solo necesitamos información básica
+                // como el nombre y el tipo, quizás una miniatura si es viable.
+                // La serialización completa se hará cuando se pida 'generate-code-request'.
+                serializedNodesInfo.push({
+                    id: node.id,
+                    name: node.name,
+                    type: node.type,
+                    // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
+                    // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
+                    thumbnail: yield node.exportAsync({ format: 'PNG', constraint: { type: 'HEIGHT', value: 28 } }) // Ejemplo
+                });
             }
         }
         // Enviar solo la información necesaria para la previsualización
@@ -77,20 +64,8 @@ figma.ui.onmessage = (msg) => __awaiter(void 0, void 0, void 0, function* () {
                 width: node.width,
                 height: node.height,
                 parentId: node.parent ? node.parent.id : null,
-                visible: node.visible
+                visible: node.visible,
             };
-            if ("children" in node) {
-                nodeData.children = node.children;
-                nodeData.childCss = [];
-                node.children.forEach((child) => __awaiter(void 0, void 0, void 0, function* () {
-                    let cssChild = yield child.getCSSAsync();
-                    if (child.type === 'TEXT') {
-                        cssChild.text = child.characters;
-                        cssChild.fontSize = String(child.fontSize);
-                    }
-                    nodeData.childCss.push(cssChild);
-                }));
-            }
             if ('fills' in node && 'strokes' in node && 'effects' in node && 'opacity' in node) {
                 nodeData.fills = node.fills;
                 nodeData.strokes = node.strokes;

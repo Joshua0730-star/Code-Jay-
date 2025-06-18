@@ -1,52 +1,62 @@
 ---
 interface Props {
-    id?: string;
+  id?: string;
 }
 const { id } = Astro.props;
 
-import { tecs } from '../../tecs.json';
+import { tecs } from "../../tecs.json";
 
-import html5 from '../assets/html5.svg?inline';
-import css from '../assets/css.svg?inline';
-import tailwindcss from '../assets/tailwindcss.svg?inline';
-import Star from '../assets/star.svg?inline';
+import html5 from "../assets/html5.svg?inline";
+import css from "../assets/css.svg?inline";
+import tailwindcss from "../assets/tailwindcss.svg?inline";
+import Star from "../assets/star.svg?inline";
+import react from "../assets/react.svg?inline";
 
 const imageMap = {
-    'html5': html5,
-    'css': css,
-    'tailwindcss': tailwindcss
+  html5: html5,
+  css: css,
+  tailwindcss: tailwindcss,
+  react: react,
 };
 ---
 
 <div
-    id={id} 
-    class="absolute bottom-16 z-10 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex-col gap-1 w-64 ring-1 ring-neutral-100 shadow-md hidden"
+  id={id}
+  class="absolute bottom-16 z-40 bg-neutral-50 text-neutral-600 px-1 py-4 rounded-lg flex-col gap-1 w-64 ring-1 ring-neutral-100 shadow-md hidden"
 >
-    {tecs.map((tec, index) => {
-        const { left, right } = tec; // <-- Ambas partes de tecnologias
+  {
+    tecs.map((tec, index) => {
+      const { left, right } = tec; // <-- Ambas partes de tecnologias
 
-        // Fuentes de imagenes
-        const leftImageSrc = imageMap[left.imgIdentifier];
-        const rightImageSrc = imageMap[right.imgIdentifier];
-        const optionText = `${left.name} y ${right.name}`;
-        return (
-            <div
-                class="tecnologia-option p-3 pl-6  flex gap-2 items-center justify-between cursor-pointer w-full hover:bg-slate-100 rounded-lg transition-all duration-150 ease-in-out"
-            data-option-text={optionText} 
-            data-left-tec={left.name}
-            data-right-tec={right.name}
-            data-index={index}
-            
-            >
-                <div class="flex items-center gap-2">
-                    {leftImageSrc && <img src={leftImageSrc} alt={left.name} class="w-5 h-5" />} {left.name}
-                    -
-                    {rightImageSrc && <img src={rightImageSrc} alt={right.name} class="w-5 h-5" />} {right.name}
-                </div>
-                <div class="selected-star-indicator hidden">
-                    <img src={Star} alt="Selected" class="size-3 " />
-                </div>
+      // Fuentes de imagenes
+      const leftImageSrc = imageMap[left.imgIdentifier] as Base64URLString;
+      const rightImageSrc = imageMap[right.imgIdentifier] as Base64URLString;
+      const optionText = `${left.name} y ${right.name}`;
+      return (
+        <div
+          class="tecnologia-option p-3 pl-6  flex gap-2 items-center justify-between cursor-pointer w-full hover:bg-slate-100 rounded-lg transition-all duration-150 ease-in-out"
+          data-option-text={optionText}
+          data-left-tec={left.name}
+          data-right-tec={right.name}
+          data-index={index}
+        >
+          <div class="flex items-center gap-2">
+            {leftImageSrc && (
+              <img src={leftImageSrc} alt={left.name} class="size-5" />
+            )}{" "}
+            {left.name}
+            &bull;
+            {rightImageSrc && (
+              <img src={rightImageSrc} alt={right.name} class="size-5" />
+            )}{" "}
+            {right.name}
+            <react />
+          </div>
+          <div class="selected-star-indicator hidden">
+            <img src={Star} alt="Selected" class="size-3 " />
+          </div>
         </div>
-        )
-    })}
+      );
+    })
+  }
 </div>

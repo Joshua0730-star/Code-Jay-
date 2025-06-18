@@ -1,4 +1,7 @@
 // Declarar las propiedades que esperamos en el objeto window
+
+import { preview } from "astro";
+
 // Esto informa a TypeScript sobre ellas.
 declare global {
     interface Window {
@@ -10,8 +13,8 @@ declare global {
 // Es crucial que el script inline en index.astro haya definido window.BACKEND_URL
 // antes de que este script se ejecute.
 const BACKEND_URL = window.BACKEND_URL; // TypeScript ahora debería reconocer BACKEND_URL
-console.log("UI Logic (main-ui-logic.ts) loaded.");
-console.log("BACKEND_URL from window:", BACKEND_URL);
+// console.log("UI Logic (main-ui-logic.ts) loaded.");
+// console.log("BACKEND_URL from window:", BACKEND_URL);
 
 if (!BACKEND_URL) {
     console.error("CRITICAL: BACKEND_URL is not defined on window. Check script order in index.astro and ensure the inline script in index.astro is setting window.BACKEND_URL.");
@@ -32,46 +35,70 @@ const iconGenerate = document.querySelector('#icon-generate') as HTMLImageElemen
 
 
 
-if (generateButton) {
-    generateButton.addEventListener('click', () => {
-        if (generateButtonText && generateButton && window.currentSelectedTechnologies) {
-            generateButtonText.textContent = 'Generating...';
-            generateButton.disabled = true;
-            generateButton.classList.remove('bg-neutral-800', 'text-neutral-50');
-            generateButton.classList.add('bg-neutral-100', 'opacity-100', 'shadow-lg', 'text-neutral-700', 'ring-gray-300', 'ring-1');
 
 
-            iconGenerate?.classList.add('hidden'); // Oculta el icono de generar
-
-            const loaderCSS = document.createElement('span');
-            loaderCSS.className = 'loader';
-
-            generateButtonText?.insertBefore(loaderCSS, generateButtonText.firstChild); // Agrega el loader al botón
-
-            // Ocultamos el botton de tecnologias
-            const modalButton = document.querySelector('#tecnologias-toggle-button') as HTMLButtonElement | null;
-
-            if (modalButton) {
-                modalButton.classList.add('hidden');
-            }
-
-        }
-
-        selectedPreviewContainer?.classList.remove('grow');
-        codeOutputContainer?.classList.remove('hidden');
+if (generateButton && generateButtonText && window.currentSelectedTechnologies) {
+    generateButton?.addEventListener('click', () => {
         // codeOutputContainer?.className()
         window.parent.postMessage({ pluginMessage: { type: 'generate-code-request' } }, '*');
-    });
+
+
+        window.onmessage = (msg) => {
+            const { pluginMessage } = msg.data
+            // console.log({ pluginMessage })
+
+            const { data, type, animation } = pluginMessage
+            // console.log(pluginMessage)
+            if (animation) {
+                generateButtonText.textContent = 'Generating...';
+                generateButton.disabled = true;
+                generateButton.classList.remove('bg-neutral-800', 'text-neutral-50');
+                generateButton.classList.add('bg-neutral-100', 'opacity-100', 'shadow-lg', 'text-neutral-700', 'ring-gray-300', 'ring-1');
+
+
+                iconGenerate?.classList.add('hidden'); // Oculta el icono de generar
+
+                const loaderCSS = document.createElement('span');
+                loaderCSS.classList.add('transition-all', 'duration-200', 'transition-discrete')
+                loaderCSS.className = 'loader';
+
+                generateButtonText?.insertBefore(loaderCSS, generateButtonText.firstChild); // Agrega el loader al botón
+
+                // Ocultamos el botton de tecnologias
+                const modalButton = document.querySelector('#tecnologias-toggle-button') as HTMLButtonElement | null;
+
+
+                if (modalButton) {
+                    modalButton.classList.add('hidden');
+                }
+
+
+
+                selectedPreviewContainer?.classList.remove('grow');
+                codeOutputContainer?.classList.remove('hidden');
+            }
+        }
+    })
 }
+
+
+
+
+
+
+
 
 
 
 // Espacio de generar el codigo, y boton de copiar
 const codeOutputContainer = document.getElementById('generated-code-container') as HTMLDivElement | null;
 const codeOutputElement = document.getElementById('generated-code-output') as HTMLElement | null;
+const codeOutputText = document.getElementById('text-output-code') as HTMLParagraphElement | null
 const generatedCodeTitle = document.getElementById('generated-code-title') as HTMLElement | null;
 const copyButtonContainer = document.getElementById('copy-button-container') as HTMLDivElement | null;
 const copyButton = document.getElementById('copy-code-button') as HTMLButtonElement | null;
+
+
 
 if (!generateButton) console.error("Element with ID 'generate-button' not found.");
 if (!selectedLayersList) console.error("Element with ID 'selected-layers-list' not found.");
@@ -79,8 +106,9 @@ if (!codeOutputElement) console.error("Element with ID 'generated-code-output' n
 
 
 // Actualiza los elementos seleccionados en la UI
-function updateSelectedLayersUI(nodes: { id: string, name: string, type: string }[]) {
-    // En caso de que no exista o no tenga nada la lista
+async function updateSelectedLayersUI(nodes: { id: string, name: string, type: string, thumbnail: Uint8Array<ArrayBufferLike> }[]) {
+
+    // // En caso de que no exista o no tenga nada la lista
     if (!selectedLayersList) {
         console.error("selectedLayersList is null in updateSelectedLayersUI");
         return;
@@ -93,20 +121,62 @@ function updateSelectedLayersUI(nodes: { id: string, name: string, type: string 
         li.textContent = 'No layers selected in Figma.';
         li.className = 'text-neutral-500 italic';
         selectedLayersList.appendChild(li); // Introduce el mensaje inicial dentro de la lista
-    } else {
-        nodes.forEach(node => {
-            const li = document.createElement('li');
-            li.textContent = `${node.name} (${node.type})`; // <-- renderiza esto para mostrar la informacion de los elementos seleccionados por el usuario
-            selectedLayersList.appendChild(li);
-        });
+        return false
     }
+    nodes.forEach((node, index) => {
+        const li = document.createElement('li');
+        // li.textContent = `${node.name} (${node.type})`;
+        li.className = 'flex items-center gap-2 justify-between p-2 bg-neutral-100 rounded-lg shadow-sm flex-1';
+
+        // Convertir thumbnail a base64
+
+
+        const base64String = btoa(String.fromCharCode(...Array.from(node.thumbnail)));
+
+        // Crear imagen de preview
+        const previewImg = document.createElement('img');
+
+        previewImg.src = `data:image/png;base64,${base64String}`;
+        previewImg.className = 'w-auto h-auto max-h-[300px] max-w-[400px]  rounded object-contain object-center';
+
+        previewImg.alt = `Preview of ${node.name}`;
+
+
+        // Crear contenedor de informacion 
+
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'flex flex-col gap-2 w-full items-end justify-center ';
+
+
+        // Nombre del elemento
+        const nameElement = document.createElement('div');
+        nameElement.textContent = `${node.name} (${node.type})`;
+        nameElement.className = 'text-sm font-medium text-neutral-700 truncate text-left';
+
+
+        // ensamblar el contenido
+
+        infoContainer.appendChild(nameElement);
+        li.appendChild(previewImg);
+        li.appendChild(infoContainer);
+        selectedLayersList.appendChild(li);
+
+
+        // Manejo de errores
+        previewImg.onerror = (err) => {
+            previewImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMiA4VjE2TTggMTJIMTYiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+';
+            previewImg.alt = 'Preview not available';
+            console.error('Error loading preview image:', err);
+        }
+    });
+
 }
 
 window.addEventListener('message', async (event) => {
     const pluginMessage = event.data.pluginMessage; // Se captura el mensaje del plugin
     if (pluginMessage) {
         if (pluginMessage.type === 'selection-changed') {
-            const selectedNodesInfo = pluginMessage.data as { id: string, name: string, type: string }[];
+            const selectedNodesInfo = pluginMessage.data as { id: string, name: string, type: string, thumbnail: Uint8Array<ArrayBufferLike> }[];
 
             if (initialSelectionMessage && initialSelectionMessage.parentNode === selectedLayersList) {
                 selectedLayersList?.removeChild(initialSelectionMessage);
@@ -151,7 +221,7 @@ window.addEventListener('message', async (event) => {
                 console.log('Figma nodes data received for generation:', figmaNodesData);
                 console.log('Selected technologies for generation:', selectedTechs);
 
-                if (codeOutputElement) codeOutputElement.textContent = '';
+                if (codeOutputElement && codeOutputText) codeOutputText.textContent = '';
                 if (generatedCodeTitle) generatedCodeTitle.textContent = 'Generating Code...';
                 if (copyButtonContainer) copyButtonContainer.classList.add('hidden');
 
@@ -173,19 +243,21 @@ window.addEventListener('message', async (event) => {
                     }
                     const result = await response.json();
                     // console.log('Code generated by AI:', result.code);
-                    if (codeOutputElement) {
-                        codeOutputElement.textContent = result.code || "AI returned no code.";
-                    }
-                    if (generatedCodeTitle) {
+                    if (codeOutputText && generatedCodeTitle && copyButtonContainer) {
+                        codeOutputText.textContent = result.code || "AI returned no code.";
+                        // console.log(codeOutputText.textContent)
                         generatedCodeTitle.textContent = 'Generated Code:';
-                    }
-                    if (copyButtonContainer) {
                         copyButtonContainer.classList.remove('hidden');
+
+                        resetStatusButton();
+
                     }
                 } catch (error: any) {
                     console.error('Error calling backend or processing AI response:', error);
+                    resetStatusButton(); // En caso de error llamo al reseteo
                     if (codeOutputElement) {
-                        codeOutputElement.textContent = `Error generating code: ${error.message}`;
+                        codeOutputElement.textContent = `Error generating code 😔`;
+
                     }
                     if (generatedCodeTitle) {
                         generatedCodeTitle.textContent = 'Error:';
@@ -209,47 +281,104 @@ window.addEventListener('message', async (event) => {
     }
 });
 
+
+
+// Reseo de el estado de los botones
+
+function resetStatusButton() {
+    const modalButton = document.querySelector('#tecnologias-toggle-button') as HTMLButtonElement | null;
+
+
+    modalButton?.classList.remove('hidden');
+
+    generateButton?.classList.remove('bg-neutral-100', 'opacity-100', 'shadow-lg', 'text-neutral-700', 'ring-gray-300', 'ring-1');
+
+    generateButton?.classList.add('bg-neutral-800', 'text-neutral-50');
+
+    const loader = generateButton?.querySelector('.loader')
+
+    loader?.classList.toggle('hidden')
+
+    iconGenerate?.classList.remove('hidden')
+}
+
+
 // Funcionalidad de copiado
-if (copyButton) {
-    copyButton.addEventListener('click', async () => {
-        if (codeOutputElement && codeOutputElement.textContent) {
+
+
+
+if (codeOutputText && copyButton) {
+    copyButton.addEventListener('click', async (e) => {
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
-                await navigator.clipboard.writeText(codeOutputElement.textContent);
-
-                // Feedback visual
-                const originalText = copyButton.textContent;
-                copyButton.textContent = 'Copied!';
-                copyButton.classList.add('bg-green-600');
-                copyButton.classList.remove('bg-neutral-800');
-
-                setTimeout(() => {
-                    copyButton.textContent = originalText;
-                    copyButton.classList.remove('bg-green-600');
-                    copyButton.classList.add('bg-neutral-800');
-                }, 2000);
-
-                window.parent.postMessage({
-                    pluginMessage: {
-                        type: 'notify',
-                        message: '✅ Code copied to clipboard!',
-                        timeout: 2000
-                    }
-                }, '*');
+                await navigator.clipboard.writeText(codeOutputText.innerText);
             } catch (error) {
-                console.error('Failed to copy code:', error);
+                console.error('Failed to copy code because clipboard-text is not allowed:', error);
                 window.parent.postMessage({
                     pluginMessage: {
                         type: 'notify',
                         message: '❌ Failed to copy code',
-                        error: true
+                        error: true,
+                        method: 'new'
                     }
                 }, '*');
             }
+
+        } else {
+            // Fallback para navegadores o entornos que bloquean clipboard API
+
+            try {
+                console.log('Copiar al metodo antiguo')
+                const textarea = document.createElement("textarea");
+                textarea.value = codeOutputText.innerText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            } catch (error) {
+                console.error('Failed to copy code to old method:', error);
+                window.parent.postMessage({
+                    pluginMessage: {
+                        type: 'notify',
+                        message: '❌ Failed to copy code',
+                        error: true,
+                        method: 'old'
+
+                    }
+                }, '*');
+            }
+
         }
-    });
+
+        copyButton.classList.add('bg-green-600', 'transition-all', 'duration-200', 'animate-up');
+        copyButton.classList.remove('bg-neutral-800', 'hover:bg-neutral-700');
+
+        setTimeout(() => {
+            copyButton.classList.remove('bg-green-600', 'animate-up');
+            copyButton.classList.add('bg-neutral-800', 'hover:bg-neutral-700');
+        }, 1000);
+
+        window.parent.postMessage({
+            pluginMessage: {
+                type: 'notify',
+                message: '✅ Code copied to clipboard!',
+                timeout: 2000
+            }
+        }, '*');
+    })
+
+
+    // Feedback visual
+
+
 }
 
-console.log(window.currentSelectedTechnologies);
+
+
+
+
+// console.log(window.currentSelectedTechnologies);
 
 // Asegura que este archivo sea tratado como un módulo por TypeScript
 export { };

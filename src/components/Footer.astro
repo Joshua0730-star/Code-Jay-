@@ -37,7 +37,7 @@ import IconMagic from "../assets/IconMagic.svg?inline";
   </div>
 
   <script>
-    // Declarar las propiedades que esperamos en el objeto window
+    // Declarar las propiedades que esperamos en el objeto window, esto es para que el compilador de typescript sepa que vamos a tener propiedades personalizadas en el objeto global window
     declare global {
       interface Window {
         currentSelectedTechnologies?: { leftTec?: string; rightTec?: string };
@@ -56,8 +56,10 @@ import IconMagic from "../assets/IconMagic.svg?inline";
     if (tecnologiasButton && tecnologiasModal) {
       // --- Lógica para abrir/cerrar el modal ---
       tecnologiasButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        tecnologiasModal.classList.toggle("hidden");
+        event.stopPropagation(); // impide que el evento de "click" llegue y se propague a sus elementos padre, sino se coloca el evento click se podria traspasar a sus padres y alterar ciertas cosas
+
+        tecnologiasModal.classList.toggle("hidden"); // toggle(): agrega una clase si no esta presente, o quitarla si ya esta
+
         if (!tecnologiasModal.classList.contains("hidden")) {
           tecnologiasModal.classList.add("flex");
         } else {
@@ -71,12 +73,12 @@ import IconMagic from "../assets/IconMagic.svg?inline";
           !tecnologiasModal.contains(event.target as Node) &&
           event.target !== tecnologiasButton
         ) {
-          tecnologiasModal.classList.add("hidden");
-          tecnologiasModal.classList.remove("flex");
+          tecnologiasModal.classList.add("hidden"); // cierra
+          tecnologiasModal.classList.remove("flex"); // abre
         }
       });
 
-      // --- Lógica para manejar el clic en las opciones del modal ---
+      // Lógica para manejar el clic en las opciones del modal
       const tecnologiaOptions = tecnologiasModal.querySelectorAll(
         ".tecnologia-option"
       ) as NodeListOf<HTMLElement>;
@@ -91,17 +93,16 @@ import IconMagic from "../assets/IconMagic.svg?inline";
           const prevStarIndicator =
             currentlySelectedOptionElement.querySelector(
               ".selected-star-indicator"
-            );
+            ) as HTMLDivElement;
           if (prevStarIndicator) {
             prevStarIndicator.classList.add("hidden");
           }
-          currentlySelectedOptionElement.classList.remove("bg-neutral-200");
         }
 
         // 2. Aplicar selección a la nueva opción
         const currentStarIndicator = selectedOptionElement.querySelector(
           ".selected-star-indicator"
-        );
+        ) as HTMLDivElement;
         if (currentStarIndicator) {
           currentStarIndicator.classList.remove("hidden");
         }
@@ -125,10 +126,10 @@ import IconMagic from "../assets/IconMagic.svg?inline";
             leftTec: leftTec,
             rightTec: rightTec,
           };
-          console.log(
-            "Technologies saved to window:",
-            window.currentSelectedTechnologies
-          );
+          // console.log(
+          //   "Technologies saved to window:",
+          //   window.currentSelectedTechnologies
+          // );
         }
       }
 

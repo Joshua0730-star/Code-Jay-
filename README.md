@@ -1,48 +1,19 @@
-# Astro Starter Kit: Basics
+### Code Jay
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Plugin gratuito de figma basado en generacion de codigo a partir de diseños y estructuras semanticas, este plugin es una beta y adelanto de una herramienta que puede estar mas potente a futuro dependiendo de todas las disponibilidades que tengamos, de codigo abierto para mejorar y tener en cuenta recomendaciones y se reservan todos los derechos
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+Con cariño hecho por @Joshua😉
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Diseño
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+El diseño fue creado como una beta en la plataforma de figma https://www.figma.com/design/A9faPEY9XxxbzkWEOAkE5t/Code-Jay?node-id=0-1&t=FSDL2GvkF96fd7lE-1
 
-## 🚀 Project Structure
+1<image src="./public/Home-page.jpg" alt="Imagen de diseño beta de Code Jay">
 
-Inside of your Astro project, you'll see the following folders and files:
+## Logotipos
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+Los logos de este proyecto fueron tomados de la Página https://svgl.app perteneciente a @pheralb
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Probar Ahora!
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Prueba esta beta ahora en tu plataforma de Figma y cuentanos que tal🚀:

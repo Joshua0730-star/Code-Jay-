@@ -1,4 +1,3 @@
-// Declarar las propiedades que esperamos en el objeto window
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -73,50 +72,35 @@ if (!codeOutputElement)
 // Actualiza los elementos seleccionados en la UI
 function updateSelectedLayersUI(nodes) {
     return __awaiter(this, void 0, void 0, function* () {
-        // // En caso de que no exista o no tenga nada la lista
-        if (!selectedLayersList) {
-            console.error("selectedLayersList is null in updateSelectedLayersUI");
-            return;
-        }
-        selectedLayersList.innerHTML = '';
-        // Agrega un mensaje inicial si no hay nodos seleccionados
-        if (nodes.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = 'No layers selected in Figma.';
-            li.className = 'text-neutral-500 italic';
-            selectedLayersList.appendChild(li); // Introduce el mensaje inicial dentro de la lista
-            return false;
-        }
-        nodes.forEach((node, index) => {
-            const li = document.createElement('li');
-            // li.textContent = `${node.name} (${node.type})`;
-            li.className = 'flex items-center gap-2 justify-between p-2 bg-neutral-100 rounded-lg shadow-sm flex-1';
-            // Convertir thumbnail a base64
-            const base64String = btoa(String.fromCharCode(...Array.from(node.thumbnail)));
-            // Crear imagen de preview
-            const previewImg = document.createElement('img');
-            previewImg.src = `data:image/png;base64,${base64String}`;
-            previewImg.className = 'w-auto h-auto max-h-[300px] max-w-[400px]  rounded object-contain object-center';
-            previewImg.alt = `Preview of ${node.name}`;
-            // Crear contenedor de informacion 
-            const infoContainer = document.createElement('div');
-            infoContainer.className = 'flex flex-col gap-2 w-full items-end justify-center ';
-            // Nombre del elemento
-            const nameElement = document.createElement('div');
-            nameElement.textContent = `${node.name} (${node.type})`;
-            nameElement.className = 'text-sm font-medium text-neutral-700 truncate text-left';
-            // ensamblar el contenido
-            infoContainer.appendChild(nameElement);
-            li.appendChild(previewImg);
-            li.appendChild(infoContainer);
-            selectedLayersList.appendChild(li);
-            // Manejo de errores
-            previewImg.onerror = (err) => {
-                previewImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMiA4VjE2TTggMTJIMTYiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+';
-                previewImg.alt = 'Preview not available';
-                console.error('Error loading preview image:', err);
-            };
+        console.log(figma);
+        nodes.forEach(({ thumbnail }) => {
+            const data = thumbnail;
+            console.log(data);
         });
+        // previewImg.src = img
+        // selectedLayersList?.appendChild(nodes[0].img)
+        // // En caso de que no exista o no tenga nada la lista
+        // if (!selectedLayersList) {
+        //     console.error("selectedLayersList is null in updateSelectedLayersUI");
+        //     return;
+        // }
+        // selectedLayersList.innerHTML = '';
+        // // Agrega un mensaje inicial si no hay nodos seleccionados
+        // if (nodes.length === 0) {
+        //     const li = document.createElement('li');
+        //     li.textContent = 'No layers selected in Figma.';
+        //     li.className = 'text-neutral-500 italic';
+        //     selectedLayersList.appendChild(li); // Introduce el mensaje inicial dentro de la lista
+        //     return false
+        // } else {
+        //     nodes.forEach(node => {
+        //         const li = document.createElement('li');
+        //         // li.textContent = `${node.name} (${node.type})`;
+        //         li.textContent = `${node.type}`
+        //         //  // <-- renderiza esto para mostrar la informacion de los elementos seleccionados por el usuario
+        //         selectedLayersList.appendChild(li);
+        //     });
+        // }
     });
 }
 window.addEventListener('message', (event) => __awaiter(void 0, void 0, void 0, function* () {

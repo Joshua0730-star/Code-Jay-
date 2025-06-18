@@ -1,14 +1,14 @@
 {
-  "name": "figma-plugin-astro",
+  "name": "code-jay",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev:astro": "astro dev", 
-    "watch:figma": "tsc -w", 
-    "dev": "concurrently \"npm run watch:figma\" \"npm run dev:astro\"", 
+    "dev:astro": "astro dev",
+    "watch:figma": "tsc -w",
+    "dev": "concurrently \"npm run watch:figma\" \"npm run dev:astro\"",
     "build:ui": "astro build",
     "build:figma_ts": "tsc",
-    "process_figma_output": "node scripts/post-build.js", 
+    "process_figma_output": "node scripts/post-build.js",
     "clean": "rimraf dist assets ui.html",
     "build:plugin": "npm run clean && npm run build:ui && npm run build:figma_ts && npm run process_figma_output"
   },
@@ -16,7 +16,7 @@
     "@figma/plugin-typings": "^1.110.0",
     "astro": "^5.7.5",
     "concurrently": "^9.1.2",
-    "fs-extra": "^11.3.0",  
+    "fs-extra": "^11.3.0",
     "nodemon": "^3.1.10",
     "rimraf": "^5.0.1",
     "typescript": "^5.8.3"

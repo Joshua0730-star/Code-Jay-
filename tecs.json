@@ -19,6 +19,16 @@
                 "name": "Tailwind",
                 "imgIdentifier": "tailwindcss"
             }
+        },
+        {
+            "left": {
+                "name": "React",
+                "imgIdentifier": "react"
+            },
+            "right": {
+                "name": "Tailwind",
+                "imgIdentifier": "tailwindcss"
+            }
         }
     ]
 }
