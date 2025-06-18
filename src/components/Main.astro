@@ -23,7 +23,7 @@
   <!-- Contenedor para código generado -->
   <div
     id="generated-code-container"
-    class="hidden pb-4 flex flex-col grow transition-all duration-200 transition-discrete"
+    class="hidden pb-4 flex flex-col flex-1 grow-[2] transition-all duration-200 transition-discrete min-h-96"
   >
     <div class="flex items-center justify-between mb-3">
       <h3
@@ -78,6 +78,10 @@
   #selected-layers-list {
     max-height: 300px;
     overflow-y: auto;
+  }
+
+  #selection-preview-container {
+    scrollbar-width: none;
   }
 
   #selected-layers-list li {
