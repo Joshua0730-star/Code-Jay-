@@ -16,4 +16,4 @@ Los logos de este proyecto fueron tomados de la Página https://svgl.app pertene
 
 ## Probar Ahora!
 
-Prueba esta beta ahora en tu plataforma de Figma y cuentanos que tal🚀:
+Prueba esta beta ahora en tu plataforma de Figma y cuentanos que tal🚀: https://www.figma.com/community/plugin/1493662629267995590
