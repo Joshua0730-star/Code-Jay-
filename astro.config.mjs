@@ -1,14 +1,15 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
+import { defineConfig, envField } from "astro/config";
+import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind()],
-  outDir: './dist',
+  outDir: "./dist",
   build: {
-    assets: 'assets', // Define el prefijo de la carpeta de assets en el build
-    inlineStylesheets: 'always' // Si lo tienes, está bien
+    assets: "assets", // Define el prefijo de la carpeta de assets en el build
+    inlineStylesheets: "always", // Si lo tienes, está bien
   },
   vite: {
     build: {
@@ -16,11 +17,9 @@ export default defineConfig({
       // Los SVGs de iconos suelen ser pequeños. Un valor de 10240 bytes (10KB)
       // debería ser suficiente para inlinear la mayoría de los SVGs.
       // Si tus SVGs son más grandes, ajusta este valor.
-      assetsDir: 'assets', // Define el prefijo de la carpeta de assets en el build
-      assetsInlineLimit: 40960 // 10KB. Puedes probar con un valor más alto si es necesario, ej:  (40KB)
-    }
+      assetsDir: "assets", // Define el prefijo de la carpeta de assets en el build
+      assetsInlineLimit: 40960, // 10KB. Puedes probar con un valor más alto si es necesario, ej:  (40KB)
+    },
   },
-  server: {
-    port: 3000,
-    host: true,}
+  adapter: vercel(),
 });
