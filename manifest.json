@@ -15,7 +15,8 @@
             "https://fonts.googleapis.com",
             "https://fonts.gstatic.com",
             "https://api.openai.com",
-            "http://localhost:3001"
+            "http://localhost:3001",
+            "https://api-plugin.onrender.com"
         ],
         "reasoning": "This plugin requires access to the OpenAI API for code generation and uses Google Fonts for styling.",
         "devAllowedDomains": [

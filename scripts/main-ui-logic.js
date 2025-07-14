@@ -182,6 +182,7 @@ window.addEventListener('message', (event) => __awaiter(void 0, void 0, void 0, 
                             }
                         })
                     });
+                    console.log('haciendo peticion');
                     if (!response.ok) {
                         const errorResult = yield response.json().catch(() => ({ error: "Unknown error from backend", details: `HTTP ${response.status} ${response.statusText}` }));
                         throw new Error(errorResult.details || errorResult.error || `Backend request failed: ${response.status} ${response.statusText}`);
