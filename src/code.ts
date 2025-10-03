@@ -6,12 +6,14 @@ if (DEV_MODE) {
 }
 
 
+// IMPORTACION DE TIPOS 🚀
+import { type PrevieDesing } from "@schemas/shcema"
 
 
-// Función para sacar informacion basica y enviar la selección actual
+// Función para sacar informacion basica y enviar datos de la selección actual al usuario
 async function sendCurrentSelectionToUI() {
   const selectedNodes = figma.currentPage.selection as SceneNode[];
-  const serializedNodesInfo = [];
+  const serializedNodesInfo: PrevieDesing[] = [];
 
   if (selectedNodes.length > 0) {
     for (const node of selectedNodes) {
@@ -27,9 +29,7 @@ async function sendCurrentSelectionToUI() {
           id: node.id,
           name: node.name,
           type: node.type,
-          // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
-          // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
-          thumbnail: thumbnail// Ejemplo
+          thumbnail: thumbnail
         });
       } catch (err) {
         console.error('Error exporting thumbnail for node:', node.name, err);
@@ -57,7 +57,9 @@ figma.ui.onmessage = async (msg) => {
     await sendCurrentSelectionToUI(); // Enviar selección actual al cargar la UI
   } else if (msg.type === 'generate-code-request') {
     const selectedNodes = figma.currentPage.selection as SceneNode[];
-    console.log(selectedNodes.length)
+
+
+
     if (selectedNodes.length === 0) {
       figma.ui.postMessage({ type: 'figma-data', data: [], error: 'No layers selected. Please select some layers to generate code.' });
       figma.notify('⚠️ No layers selected. Please select some layers.', { error: true });
@@ -66,6 +68,8 @@ figma.ui.onmessage = async (msg) => {
 
     const serializedNodes = []; // Array para la serialización completa
     for (const node of selectedNodes) {
+
+      const image = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 }, contentsOnly: true })
       const nodeData: any = {
         id: node.id,
         name: node.name,
@@ -75,27 +79,15 @@ figma.ui.onmessage = async (msg) => {
         width: node.width,
         height: node.height,
         parentId: node.parent ? node.parent.id : null,
-        visible: node.visible
+        visible: node.visible,
+        image: image
       };
 
-      if ("children" in node) {
-        nodeData.children = node.children
-        nodeData.childCss = []
-        node.children.forEach(async (child) => {
-          let cssChild = await child.getCSSAsync();
-
-
-          if (child.type === 'TEXT') {
-            cssChild.text = child.characters;
-            cssChild.fontSize = String(child.fontSize)
-          }
-
-          nodeData.childCss.push(cssChild);
-        })
 
 
 
-      }
+
+
 
       if ('fills' in node && 'strokes' in node && 'effects' in node && 'opacity' in node) {
         nodeData.fills = node.fills;

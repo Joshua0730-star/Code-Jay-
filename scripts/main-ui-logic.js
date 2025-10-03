@@ -1,4 +1,3 @@
-// Declarar las propiedades que esperamos en el objeto window
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { byID } from "@lib/dom-selector";
 // Es crucial que el script inline en index.astro haya definido window.BACKEND_URL
 // antes de que este script se ejecute.
 const BACKEND_URL = window.BACKEND_URL; // TypeScript ahora debería reconocer BACKEND_URL
@@ -19,14 +19,14 @@ if (!BACKEND_URL) {
 }
 window.parent.postMessage({ pluginMessage: { type: "ui-loaded-and-ready-for-selection" } }, "*");
 // Botones
-const generateButton = document.getElementById('generate-button');
-const generateButtonText = document.getElementById('generate-button-text');
+const generateButton = byID('generate-button');
+const generateButtonText = byID('generate-button-text');
 // Listas para mostrar los elementos seleccionados
-const selectedLayersList = document.getElementById('selected-layers-list');
-const initialSelectionMessage = document.getElementById('initial-selection-message');
-const selectedPreviewContainer = document.getElementById('selection-preview-container');
+const selectedLayersList = byID('selected-layers-list');
+const initialSelectionMessage = byID('initial-selection-message');
+const selectedPreviewContainer = byID('selection-preview-container');
 // Icono y Loader
-const iconGenerate = document.querySelector('#icon-generate');
+const iconGenerate = byID('icon-generate');
 if (generateButton && generateButtonText && window.currentSelectedTechnologies) {
     generateButton === null || generateButton === void 0 ? void 0 : generateButton.addEventListener('click', () => {
         // codeOutputContainer?.className()
@@ -294,4 +294,3 @@ if (codeOutputText && copyButton) {
     }));
     // Feedback visual
 }
-export {};

@@ -1,6 +1,8 @@
-1. Solucionar el error de copiado (como copiar a la papelera de un usuario) ✅
-2. Solucionar el tema del boton y que vuelvan a sus estados naturales ✅
-3. Dar imagenes de preview de los elementos seleccionados ✅
+## ERRORES
 
-4) Agregar mas tecnologias de opciones ✅
-5) Crear un plugin rapido de prueba para ver como funciona el despliegue
+1. Mejorar la proximidad del output con lo que el usuario esta pidiendo, es decir, que sea mas parecido a el diseño y mucho mas realista
+   - mandando imagenes mas consistentes y algunos datos al sdk de la Api de IA que se usa
+2. Mejorar la estructura de la Api y la conexión
+   - Mejorar el manejo de los endpoint
+   - Mejorar la limpieza de los datos y que sean mas consistentes y mas realistas
+   - no pasar tantos datos inncesesarios y reducir los loops posibles

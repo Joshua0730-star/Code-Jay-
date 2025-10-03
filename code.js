@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +14,7 @@ if (DEV_MODE) {
 else {
     figma.showUI(__html__, { width: 700, height: 650 });
 }
-// Función para sacar informacion basica y enviar la selección actual
+// Función para sacar informacion basica y enviar datos de la selección actual al usuario
 function sendCurrentSelectionToUI() {
     return __awaiter(this, void 0, void 0, function* () {
         const selectedNodes = figma.currentPage.selection;
@@ -31,9 +30,7 @@ function sendCurrentSelectionToUI() {
                         id: node.id,
                         name: node.name,
                         type: node.type,
-                        // Podrías intentar exportar una miniatura aquí, pero ten cuidado con el rendimiento
-                        // y el tamaño del mensaje. Por ahora, solo nombre y tipo.
-                        thumbnail: thumbnail // Ejemplo
+                        thumbnail: thumbnail
                     });
                 }
                 catch (err) {
@@ -60,7 +57,6 @@ figma.ui.onmessage = (msg) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else if (msg.type === 'generate-code-request') {
         const selectedNodes = figma.currentPage.selection;
-        console.log(selectedNodes.length);
         if (selectedNodes.length === 0) {
             figma.ui.postMessage({ type: 'figma-data', data: [], error: 'No layers selected. Please select some layers to generate code.' });
             figma.notify('⚠️ No layers selected. Please select some layers.', { error: true });
@@ -68,6 +64,7 @@ figma.ui.onmessage = (msg) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const serializedNodes = []; // Array para la serialización completa
         for (const node of selectedNodes) {
+            const image = yield node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 }, contentsOnly: true });
             const nodeData = {
                 id: node.id,
                 name: node.name,
@@ -77,20 +74,9 @@ figma.ui.onmessage = (msg) => __awaiter(void 0, void 0, void 0, function* () {
                 width: node.width,
                 height: node.height,
                 parentId: node.parent ? node.parent.id : null,
-                visible: node.visible
+                visible: node.visible,
+                image: image
             };
-            if ("children" in node) {
-                nodeData.children = node.children;
-                nodeData.childCss = [];
-                node.children.forEach((child) => __awaiter(void 0, void 0, void 0, function* () {
-                    let cssChild = yield child.getCSSAsync();
-                    if (child.type === 'TEXT') {
-                        cssChild.text = child.characters;
-                        cssChild.fontSize = String(child.fontSize);
-                    }
-                    nodeData.childCss.push(cssChild);
-                }));
-            }
             if ('fills' in node && 'strokes' in node && 'effects' in node && 'opacity' in node) {
                 nodeData.fills = node.fills;
                 nodeData.strokes = node.strokes;
@@ -170,3 +156,4 @@ figma.on('selectionchange', () => __awaiter(void 0, void 0, void 0, function* ()
     console.log('Figma selection changed, updating UI.');
     yield sendCurrentSelectionToUI();
 }));
+export {};

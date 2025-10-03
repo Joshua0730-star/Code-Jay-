@@ -14,7 +14,13 @@
     "outDir": "./",
     "rootDir": "./src",
     "allowJs": true,
-    "noEmit": false
+    "noEmit": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@schemas/*": ["schemas/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

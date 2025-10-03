@@ -1,6 +1,7 @@
+import { byID, query } from "@lib/dom-selector";
+
 // Declarar las propiedades que esperamos en el objeto window
 
-import { preview } from "astro";
 
 // Esto informa a TypeScript sobre ellas.
 declare global {
@@ -12,6 +13,7 @@ declare global {
 
 // Es crucial que el script inline en index.astro haya definido window.BACKEND_URL
 // antes de que este script se ejecute.
+
 const BACKEND_URL = window.BACKEND_URL; // TypeScript ahora debería reconocer BACKEND_URL
 // console.log("UI Logic (main-ui-logic.ts) loaded.");
 // console.log("BACKEND_URL from window:", BACKEND_URL);
@@ -23,15 +25,15 @@ if (!BACKEND_URL) {
 
 window.parent.postMessage({ pluginMessage: { type: "ui-loaded-and-ready-for-selection" } }, "*");
 // Botones
-const generateButton = document.getElementById('generate-button') as HTMLButtonElement | null;
-const generateButtonText = document.getElementById('generate-button-text') as HTMLSpanElement | null;
+const generateButton = byID('generate-button') as HTMLButtonElement | null;
+const generateButtonText = byID('generate-button-text') as HTMLSpanElement | null;
 
 // Listas para mostrar los elementos seleccionados
-const selectedLayersList = document.getElementById('selected-layers-list') as HTMLUListElement | null;
-const initialSelectionMessage = document.getElementById('initial-selection-message') as HTMLLIElement | null;
-const selectedPreviewContainer = document.getElementById('selection-preview-container') as HTMLDivElement | null;
+const selectedLayersList = byID('selected-layers-list') as HTMLUListElement | null;
+const initialSelectionMessage = byID('initial-selection-message') as HTMLLIElement | null;
+const selectedPreviewContainer = byID('selection-preview-container') as HTMLDivElement | null;
 // Icono y Loader
-const iconGenerate = document.querySelector('#icon-generate') as HTMLImageElement | null;
+const iconGenerate = byID('icon-generate') as HTMLImageElement | null;
 
 
 
